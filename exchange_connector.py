@@ -1,9 +1,12 @@
+import os
+
 import ccxt.async_support
 import logging
 
 
 def get_exchange():
-    exchange = ccxt.async_support.binance()
+    exchange_name = os.getenv("EXCHANGE", "binance")
+    exchange = getattr(ccxt.async_support, exchange_name)()
     exchange.logger.setLevel(logging.INFO)
     return exchange
 
@@ -20,11 +23,14 @@ async def get_tickers(exchange: ccxt.async_support.Exchange) -> list:
             {
                 "symbol": exchange.safe_symbol(ticker["symbol"], marketType="spot"),
                 "close": ticker.get("price", 0),
-                "time": ticker.get("time", 0),
+                "timestamp": ticker.get("time", 0),
             }
             for ticker in response
         ]
-    return await exchange.fetch_tickers()
+    return [
+        ticker
+        for ticker in (await exchange.fetch_tickers()).values()
+    ]
 
 
 async def get_ohlcv(exchange: ccxt.async_support.Exchange, symbol: str, timeframe: str) -> list:

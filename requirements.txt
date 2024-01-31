@@ -1,0 +1,2 @@
+aiohttp
+ccxt==4.2.10

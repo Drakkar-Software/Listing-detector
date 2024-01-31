@@ -19,7 +19,7 @@ async def find_new_coins(db: coins_db.CoinsDB, exchange) -> list:
 
 async def coins_finder_loop(exchange: ccxt.async_support.Exchange):
     logger = logging.getLogger(f"{exchange.id}-loop")
-    sleep_time = float(os.getenv("SLEEP_TIME"))
+    sleep_time = float(os.getenv("SLEEP_TIME", 30))
     start_message = f"Starting, sleep_time={sleep_time}s, discord url={notifications.get_discord_url()[:40]}..."
     logger.debug(start_message)
     await notifications.send_discord_notification(

@@ -3,12 +3,16 @@ import os
 import logging
 
 
+def get_discord_url():
+    return os.getenv("DISCORD_WEBHOOK_URL")
+
+
 async def send_discord_notification(subject, title, content):
     logger = logging.getLogger("notifications")
     try:
         async with aiohttp.ClientSession() as session:
             async with session.post(
-                os.getenv("DISCORD_WEBHOOK_URL"),
+                get_discord_url(),
                 json={
                     "content": subject,
                     "username": "New listings detector",

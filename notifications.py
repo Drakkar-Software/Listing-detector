@@ -8,8 +8,8 @@ def get_discord_url():
 
 
 async def send_discord_notification(subject, title, content):
+    logger = logging.getLogger("notifications")
     if url := get_discord_url():
-        logger = logging.getLogger("notifications")
         try:
             async with aiohttp.ClientSession() as session:
                 async with session.post(
@@ -30,4 +30,6 @@ async def send_discord_notification(subject, title, content):
         except aiohttp.ClientError as err:
             logger.error(f"Failed to send discord notification: {err}")
             logger.exception(err)
+    else:
+        logger.debug(f"Notification: {content}")
 

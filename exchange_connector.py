@@ -38,5 +38,5 @@ async def get_ohlcv(exchange: ccxt.async_support.Exchange, symbol: str, timefram
 
 
 async def reload_markets(exchange: ccxt.async_support.Exchange):
-    logging.getLogger(f"{exchange.id}").info("reloading market")
+    logging.getLogger(f"{exchange.id}").info("Reloading market")
     return await exchange.load_markets(reload=True)

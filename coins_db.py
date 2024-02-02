@@ -24,6 +24,12 @@ class CoinsDB:
     def get_price_pairs(self, coin: str):
         return self._known_coins[coin].trading_pairs
 
+    def count(self):
+        return len(self._known_coins)
+
+    def coins(self):
+        return list(self._known_coins)
+
 
 def _get_coins_from_tickers(tickers: list):
     coins = {}

@@ -10,10 +10,13 @@ import notifications
 
 
 async def find_new_coins(db: coins_db.CoinsDB, exchange) -> list:
+    logger = logging.getLogger(f"{exchange.id}-loop")
     initialized = db.initialized()
     added_coins = db.update_coins_from_tickers(await exchange_connector.get_tickers(exchange))
     if initialized:
         return added_coins
+    else:
+        logger.debug(f"{exchange.id} DB initialized with {db.count()} coins: {db.coins()}")
     return []
 
 
@@ -30,7 +33,6 @@ async def coins_finder_loop(exchange: ccxt.async_support.Exchange):
     db = coins_db.CoinsDB()
     while True:
         try:
-            logger.debug("New iteration")
             if new_coins := await find_new_coins(db, exchange):
                 logger.info(f"New coins: {new_coins}")
                 await asyncio.gather(*[
@@ -41,6 +43,7 @@ async def coins_finder_loop(exchange: ccxt.async_support.Exchange):
                     )
                     for coin in new_coins
                 ])
+            logger.debug(f"Iteration completed: {db.count()} coins")
         except BaseException as err:
             await notifications.send_discord_notification(
                 "Listing detector",
